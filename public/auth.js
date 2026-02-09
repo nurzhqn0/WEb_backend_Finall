@@ -150,6 +150,41 @@ async function loadProfile() {
     const since = user.createdAt ? new Date(user.createdAt).toLocaleDateString("en-US") : "-";
     const member = document.getElementById("memberSince");
     if (member) member.textContent = since;
+
+    const editName = document.getElementById("editName");
+    const editEmail = document.getElementById("editEmail");
+    if (editName) editName.value = user.name || "";
+    if (editEmail) editEmail.value = user.email || "";
+
+    const saveBtn = document.getElementById("saveProfileBtn");
+    if (saveBtn && saveBtn.dataset.bound !== "1") {
+      saveBtn.dataset.bound = "1";
+      saveBtn.addEventListener("click", async () => {
+        const name = (document.getElementById("editName").value || "").trim();
+        const email = (document.getElementById("editEmail").value || "").trim();
+
+        try {
+          const { user: updated } = await API.request("/api/users/me", {
+            method: "PATCH",
+            body: JSON.stringify({ name, email })
+          });
+          localStorage.setItem("currentUser", JSON.stringify(updated));
+          document.getElementById("avatarInitials").textContent = getInitials(updated.name);
+          document.getElementById("profileName").textContent = updated.name;
+          document.getElementById("profileEmail").textContent = updated.email;
+          renderNavbarAuth();
+
+          const modalEl = document.getElementById("editProfileModal");
+          if (modalEl && window.bootstrap) {
+            const inst = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            inst.hide();
+          }
+          showToast("Profile updated");
+        } catch (e) {
+          alert(e.message);
+        }
+      });
+    }
   } catch (e) {
     clearUserSession();
     window.location.href = "login.html";

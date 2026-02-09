@@ -292,30 +292,7 @@ function initializeUXElements() {
     // Shows spinner when form is submitted
     // ============================
     
-    if ($('#contactForm').length) {
-        $('#contactForm').on('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = $(this).find('button[type="submit"]');
-            const originalText = submitBtn.html();
-            
-            // Disable button and show spinner
-            submitBtn.prop('disabled', true)
-                     .html('<span class="spinner-border spinner-border-sm me-2"></span>Please wait...');
-            
-            // Simulate server call
-            setTimeout(function() {
-                // Show success notification
-                showNotification('<i class="bi bi-check-circle me-2"></i> Form submitted successfully!', 'success');
-                
-                // Reset button
-                submitBtn.prop('disabled', false).html(originalText);
-                
-                // Reset form
-                $('#contactForm')[0].reset();
-            }, 2500);
-        });
-    }
+    
 }
 
 // PART 3: Using jQuery to Improve Web App Functionality

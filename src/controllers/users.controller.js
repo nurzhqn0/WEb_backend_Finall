@@ -3,7 +3,7 @@ const User = require("../models/User");
 
 const updateSchema = Joi.object({
   name: Joi.string().min(2).max(80).optional(),
-  email: Joi.string().email().optional()
+  email: Joi.string().email({ tlds: { allow: false } }).optional()
 });
 
 async function me(req, res, next) {

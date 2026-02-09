@@ -120,8 +120,10 @@ async function removeItem(req, res, next) {
     const item = cart.items.id(req.params.id);
     if (!item) return res.status(404).json({ message: 'Cart item not found' });
 
-    item.remove();
-    await cart.save();
+    await Cart.updateOne(
+      { userId: req.user.userId },
+      { $pull: { items: { _id: item._id } } }
+    );
 
     const updated = await Cart.findOne({ userId: req.user.userId })
       .populate('items.productId', 'name title type category imageUrl isAvailable sizeOptions sizes');
